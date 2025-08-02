@@ -1,0 +1,369 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.625rem;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --sidebar: 0 0% 100%;
+    --sidebar-foreground: 222.2 84% 4.9%;
+    --sidebar-primary: 222.2 47.4% 11.2%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222.2 84% 4.9%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 222.2 84% 4.9%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar: 222.2 84% 4.9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 210 40% 98%;
+    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-ring: 212.7 26.8% 83.9%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Header Styles */
+  .header-content {
+    @apply px-4;
+    max-width: none;
+  }
+
+  /* Title Input Styles */
+  .title-input-container .title-input-field {
+    background: transparent;
+  }
+
+  /* Dark mode specific styles */
+  .dark .title-input-container .title-input-field {
+    background: transparent;
+  }
+
+  /* Note Page Editor Styles */
+  .note-page-editor-container {
+    @apply flex flex-col h-full;
+  }
+
+  .note-page-editor-placeholder {
+    @apply flex items-center justify-center h-full;
+  }
+
+  /* Note List Styles */
+  .note-list-container {
+    @apply flex-1 overflow-auto;
+  }
+
+  .note-list-item {
+    @apply flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-colors hover:bg-accent;
+  }
+
+  .note-list-item-selected {
+    @apply bg-accent border-primary;
+  }
+
+  .note-card {
+    @apply cursor-pointer transition-all hover:shadow-md;
+  }
+
+  .note-card-selected {
+    @apply ring-2 ring-primary;
+  }
+
+  /* Editor Styles */
+  .editor-container {
+    @apply flex-1 flex flex-col h-full;
+  }
+
+  .editor-toolbar {
+    @apply border-b p-2 flex items-center gap-1;
+  }
+
+  .editor-content {
+    @apply flex-1 overflow-auto p-4;
+  }
+
+  /* Rich Text Editor Styles */
+  .ProseMirror {
+    @apply outline-none min-h-[200px] max-w-none;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .ProseMirror h1 {
+    @apply text-2xl font-bold mb-4;
+  }
+
+  .ProseMirror h2 {
+    @apply text-xl font-bold mb-3;
+  }
+
+  .ProseMirror h3 {
+    @apply text-lg font-bold mb-2;
+  }
+
+  .ProseMirror p {
+    @apply mb-2;
+  }
+
+  .ProseMirror strong {
+    @apply font-bold;
+  }
+
+  .ProseMirror em {
+    @apply italic;
+  }
+
+  .ProseMirror blockquote {
+    @apply border-l-4 border-gray-300 pl-4 italic my-4;
+  }
+
+  /* List Styles */
+  .ProseMirror ul {
+    @apply list-disc list-inside space-y-1;
+  }
+
+  .ProseMirror ol {
+    @apply list-decimal list-inside space-y-1;
+  }
+
+  .ProseMirror li {
+    @apply mb-1;
+  }
+
+  .ProseMirror p.is-editor-empty:first-child::before {
+    @apply text-muted-foreground float-left h-0 pointer-events-none;
+    content: attr(data-placeholder);
+  }
+
+  .ProseMirror img {
+    @apply rounded-lg relative;
+    transition: all 0.2s ease;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .ProseMirror img.selected {
+    @apply ring-2 ring-blue-500 ring-offset-2;
+    outline: 2px solid #3b82f6;
+  }
+
+  .ProseMirror img:hover {
+    @apply ring-2 ring-blue-500 ring-opacity-50;
+  }
+
+  .ProseMirror img.selected {
+    @apply ring-2 ring-blue-500;
+  }
+
+  .ProseMirror .image-container {
+    @apply relative inline-block;
+  }
+
+  .ProseMirror .image-delete-btn {
+    @apply absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 transition-opacity cursor-pointer hover:bg-red-600;
+  }
+
+  .ProseMirror .image-container:hover .image-delete-btn,
+  .ProseMirror .image-container.selected .image-delete-btn {
+    @apply opacity-100;
+  }
+
+  .ProseMirror .image-resize-handle {
+    @apply absolute bottom-0 right-0 w-4 h-4 bg-blue-500 rounded-tl cursor-se-resize opacity-0 transition-opacity;
+  }
+
+  .ProseMirror .image-container:hover .image-resize-handle,
+  .ProseMirror .image-container.selected .image-resize-handle {
+    @apply opacity-100;
+  }
+
+  /* Text Alignment */
+  .ProseMirror .text-left {
+    text-align: left;
+  }
+
+  .ProseMirror .text-center {
+    text-align: center;
+  }
+
+  .ProseMirror .text-right {
+    text-align: right;
+  }
+
+  .ProseMirror .text-justify {
+    text-align: justify;
+  }
+
+  /* Image Alignment Styles */
+  .ProseMirror img.text-left {
+    display: block;
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .ProseMirror img.text-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .ProseMirror img.text-right {
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  .ProseMirror img.text-justify {
+    display: block;
+    width: 100%;
+  }
+
+  /* Button States */
+  .btn-active {
+    @apply bg-accent;
+  }
+
+  /* Loading States */
+  .skeleton {
+    @apply animate-pulse bg-muted rounded;
+  }
+
+  /* Transitions */
+  .transition-theme {
+    @apply transition-colors duration-300;
+  }
+
+  /* Responsive Utilities */
+  .mobile-only {
+    @apply block md:hidden;
+  }
+
+  .desktop-only {
+    @apply hidden md:block;
+  }
+
+  /* Line Clamp */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@layer utilities {
+  /* Custom Scrollbar */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground)) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground));
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--foreground));
+  }
+
+  /* Focus Styles */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  /* Text Selection */
+  .selection-primary::selection {
+    @apply bg-primary/20;
+  }
+
+  /* Animation Delays */
+  .animate-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animate-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+}
