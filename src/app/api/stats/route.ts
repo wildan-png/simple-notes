@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { databaseService } from '@/lib/database';
+import { supabaseDatabaseService } from '@/lib/database-supabase';
 
 export async function GET() {
   try {
-    const stats = await databaseService.getStorageStats();
+    const stats = await supabaseDatabaseService.getStorageStats();
     
     return NextResponse.json({
       ...stats,

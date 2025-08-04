@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { databaseService } from '@/lib/database';
+import { supabaseDatabaseService } from '@/lib/database-supabase';
 import { Note } from '@/types';
 import { generateId } from '@/lib/utils';
 
@@ -12,9 +12,9 @@ export async function GET(request: NextRequest) {
     let notes: Note[];
     
     if (query) {
-      notes = await databaseService.searchNotes(query);
+      notes = await supabaseDatabaseService.searchNotes(query);
     } else {
-      notes = await databaseService.getAllNotes();
+      notes = await supabaseDatabaseService.getAllNotes();
     }
 
     return NextResponse.json({ notes });
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       isPinned: body.isPinned || false,
     };
 
-    await databaseService.saveNote(note);
+    await supabaseDatabaseService.saveNote(note);
 
     return NextResponse.json({ note }, { status: 201 });
   } catch (error) {
@@ -66,7 +66,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const existingNote = await databaseService.getNoteById(id);
+    const existingNote = await supabaseDatabaseService.getNoteById(id);
     if (!existingNote) {
       return NextResponse.json(
         { error: 'Note not found' },
@@ -80,7 +80,7 @@ export async function PUT(request: NextRequest) {
       updatedAt: new Date(),
     };
 
-    await databaseService.saveNote(updatedNote);
+    await supabaseDatabaseService.saveNote(updatedNote);
 
     return NextResponse.json({ note: updatedNote });
   } catch (error) {
@@ -105,7 +105,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    await databaseService.deleteNote(id);
+    await supabaseDatabaseService.deleteNote(id);
 
     return NextResponse.json({ success: true });
   } catch (error) {

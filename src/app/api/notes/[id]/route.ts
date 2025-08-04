@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { databaseService } from '@/lib/database';
+import { supabaseDatabaseService } from '@/lib/database-supabase';
 
 // GET /api/notes/[id] - Get a specific note
 export async function GET(
@@ -17,7 +17,7 @@ export async function GET(
       );
     }
     
-    const note = await databaseService.getNoteById(id);
+    const note = await supabaseDatabaseService.getNoteById(id);
     
     if (!note) {
       return NextResponse.json(
@@ -54,7 +54,7 @@ export async function PUT(
     
     const body = await request.json();
     
-    const existingNote = await databaseService.getNoteById(id);
+    const existingNote = await supabaseDatabaseService.getNoteById(id);
     if (!existingNote) {
       return NextResponse.json(
         { error: 'Note not found' },
@@ -68,7 +68,7 @@ export async function PUT(
       updatedAt: new Date(),
     };
 
-    await databaseService.saveNote(updatedNote);
+    await supabaseDatabaseService.saveNote(updatedNote);
 
     return NextResponse.json({ note: updatedNote });
   } catch (error) {
@@ -96,7 +96,7 @@ export async function DELETE(
       );
     }
     
-    await databaseService.deleteNote(id);
+    await supabaseDatabaseService.deleteNote(id);
 
     return NextResponse.json({ success: true });
   } catch (error) {
