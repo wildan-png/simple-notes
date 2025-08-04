@@ -23,6 +23,12 @@ A modern, offline-first notes application with **cross-browser data sharing** us
 - **Auto-compression**: Images automatically compressed to ≤1024px width
 - **TipTap Editor**: Modern, extensible rich text editor
 
+### 🤖 AI Text Generation
+- **ChatGPT Integration**: Generate text using OpenAI's GPT-3.5-turbo
+- **Smart Prompts**: Describe what you want to write and get AI-generated content
+- **Real-time Generation**: Text is inserted directly into the editor
+- **Loading Indicators**: Visual feedback during generation process
+
 ### 🎯 User Experience
 - **Dark/Light Theme**: Automatic system preference detection
 - **Responsive Design**: Works on desktop, tablet, and mobile
@@ -126,6 +132,24 @@ CREATE TABLE images (
 
 ### Environment Variables
 Create a `.env.local` file for custom configuration:
+
+```bash
+# Database
+DATABASE_URL="file:./data/notes.db"
+
+# OpenAI API Key (Required for AI text generation)
+OPENAI_API_KEY="your-openai-api-key-here"
+
+# Supabase (Optional - for cloud storage)
+NEXT_PUBLIC_SUPABASE_URL="your-supabase-url"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
+SUPABASE_SERVICE_ROLE_KEY="your-supabase-service-role-key"
+```
+
+**Note**: To use the AI text generation feature, you need to:
+1. Get an OpenAI API key from [OpenAI Platform](https://platform.openai.com/api-keys)
+2. Add it to your `.env.local` file as `OPENAI_API_KEY`
+3. Restart your development server
 
 ```env
 # Database path (optional, defaults to ./data/notes.db)

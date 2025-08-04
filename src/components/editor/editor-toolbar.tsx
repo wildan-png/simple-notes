@@ -1,10 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Bold, Italic, Underline, List, ListOrdered, Image, Trash2, AlignLeft, AlignCenter, AlignRight, AlignJustify, Loader2 } from "lucide-react"
+import { Bold, Italic, Underline, List, ListOrdered, Image, Trash2, AlignLeft, AlignCenter, AlignRight, AlignJustify, Loader2, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Editor } from "@tiptap/react"
+import { AIGenerationModal } from "./ai-generation-modal"
 
 interface EditorToolbarProps {
   editor?: Editor
@@ -14,6 +15,8 @@ interface EditorToolbarProps {
 
 export function EditorToolbar({ editor, onImageUpload, isUploadingImage = false }: EditorToolbarProps) {
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement | null>(null)
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false)
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false)
 
   // Check for selected image on every render
   useEffect(() => {
@@ -50,6 +53,40 @@ export function EditorToolbar({ editor, onImageUpload, isUploadingImage = false 
       }
     }
     input.click()
+  }
+
+  const handleAIGeneration = async (prompt: string): Promise<string> => {
+    setIsGeneratingAI(true)
+    
+    try {
+      const response = await fetch('/api/ai-generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to generate text')
+      }
+
+      const data = await response.json()
+      const generatedText = data.text
+
+      // Insert the generated text into the editor
+      if (editor && generatedText) {
+        editor.chain().focus().insertContent(generatedText).run()
+      }
+
+      return generatedText
+    } catch (error) {
+      console.error('AI generation error:', error)
+      throw error
+    } finally {
+      setIsGeneratingAI(false)
+    }
   }
 
   if (!editor) {
@@ -157,6 +194,19 @@ export function EditorToolbar({ editor, onImageUpload, isUploadingImage = false 
         title="Justify"
       >
         <AlignJustify className="h-4 w-4" />
+      </Button>
+
+      <Separator orientation="vertical" className="h-6" />
+
+      {/* AI Generation */}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => setIsAIModalOpen(true)}
+        title="AI Text Generation"
+        className="text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+      >
+        <Sparkles className="h-4 w-4" />
       </Button>
 
       <Separator orientation="vertical" className="h-6" />
@@ -360,6 +410,14 @@ export function EditorToolbar({ editor, onImageUpload, isUploadingImage = false 
           </div>
         </div>
       )}
+
+      {/* AI Generation Modal */}
+      <AIGenerationModal
+        isOpen={isAIModalOpen}
+        onClose={() => setIsAIModalOpen(false)}
+        onGenerate={handleAIGeneration}
+        isGenerating={isGeneratingAI}
+      />
     </div>
   )
 } 
