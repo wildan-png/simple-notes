@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import Underline from "@tiptap/extension-underline"
 import TextAlign from "@tiptap/extension-text-align"
 import Image from "@tiptap/extension-image"
 
@@ -12,9 +11,10 @@ import { EditorToolbar } from "./editor-toolbar"
 interface RichTextEditorProps {
   content: string
   onContentChange: (content: string) => void
+  onImageUpload?: (file: File) => void
 }
 
-export function RichTextEditor({ content, onContentChange }: RichTextEditorProps) {
+export function RichTextEditor({ content, onContentChange, onImageUpload }: RichTextEditorProps) {
   const [isClient, setIsClient] = useState(false)
 
   // Ensure we're on the client side before rendering the editor
@@ -25,7 +25,6 @@ export function RichTextEditor({ content, onContentChange }: RichTextEditorProps
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Underline,
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
@@ -76,7 +75,7 @@ export function RichTextEditor({ content, onContentChange }: RichTextEditorProps
 
   return (
     <div className="rich-text-editor-container flex-1 flex flex-col min-h-0">
-      <EditorToolbar editor={editor} />
+      <EditorToolbar editor={editor} onImageUpload={onImageUpload} />
       <div className="rich-text-editor-content flex-1 overflow-y-auto p-4">
         <EditorContent 
           editor={editor} 
