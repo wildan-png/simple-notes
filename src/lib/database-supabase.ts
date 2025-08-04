@@ -5,7 +5,18 @@ import { Note, ImageReference } from '@/types';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('Missing Supabase environment variables');
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+});
+
+console.log('Supabase client initialized with URL:', supabaseUrl);
 
 class SupabaseDatabaseService {
   // Note operations
@@ -199,6 +210,11 @@ class SupabaseDatabaseService {
     try {
       console.log('saveImage called with:', { noteId, image, blobSize: blob.size })
       
+      // Validate inputs
+      if (!noteId || !image || !blob) {
+        throw new Error('Missing required parameters for saveImage');
+      }
+      
       // Convert Blob to ArrayBuffer
       const arrayBuffer = await blob.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
@@ -232,12 +248,19 @@ class SupabaseDatabaseService {
 
       if (error) {
         console.error('Supabase insert error:', error)
+        console.error('Error details:', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint
+        });
         throw error
       }
       
       console.log('Image saved successfully:', data)
     } catch (error) {
       console.error('Error saving image:', error);
+      console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
       throw error;
     }
   }
