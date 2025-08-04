@@ -32,8 +32,9 @@ export function NoteEditor({ noteId }: NoteEditorProps) {
     <div className="note-editor-container flex-1 flex flex-col h-full">
       <div className="note-editor-content flex-1 flex flex-col p-4">
         <TitleInput 
-          title={note.title} 
-          onTitleChange={(title) => updateNote(noteId, { title })} 
+          value={note.title} 
+          onChange={(title) => updateNote(noteId, { title })} 
+          isSaving={isSaving}
         />
         <RichTextEditor 
           content={note.content} 
