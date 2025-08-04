@@ -197,23 +197,45 @@ class SupabaseDatabaseService {
   // Image operations
   async saveImage(noteId: string, image: ImageReference, blob: Blob): Promise<void> {
     try {
+      console.log('saveImage called with:', { noteId, image, blobSize: blob.size })
+      
       // Convert Blob to ArrayBuffer
       const arrayBuffer = await blob.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
+      
+      console.log('Converted blob to Uint8Array, size:', uint8Array.length)
 
-      const { error } = await supabase
+      const insertData = {
+        id: image.id,
+        note_id: noteId,
+        blob_key: image.blobKey,
+        alt: image.alt,
+        width: image.width,
+        height: image.height,
+        data: uint8Array,
+      }
+      
+      console.log('About to insert image data:', {
+        id: insertData.id,
+        note_id: insertData.note_id,
+        blob_key: insertData.blob_key,
+        alt: insertData.alt,
+        width: insertData.width,
+        height: insertData.height,
+        dataSize: insertData.data.length
+      })
+
+      const { data, error } = await supabase
         .from('images')
-        .insert({
-          id: image.id,
-          note_id: noteId,
-          blob_key: image.blobKey,
-          alt: image.alt,
-          width: image.width,
-          height: image.height,
-          data: uint8Array,
-        });
+        .insert(insertData)
+        .select()
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase insert error:', error)
+        throw error
+      }
+      
+      console.log('Image saved successfully:', data)
     } catch (error) {
       console.error('Error saving image:', error);
       throw error;

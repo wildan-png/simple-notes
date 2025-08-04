@@ -21,9 +21,13 @@ export function NoteEditor({ noteId }: NoteEditorProps) {
     
     setIsUploadingImage(true)
     try {
+      console.log('Starting image upload for file:', file.name, 'Size:', file.size)
+      
       // Generate unique ID for the image
       const imageId = `img_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       const blobKey = `${noteId}_${imageId}`
+      
+      console.log('Generated image ID:', imageId, 'Blob key:', blobKey)
       
       // Get image dimensions
       const img = new Image()
@@ -34,6 +38,8 @@ export function NoteEditor({ noteId }: NoteEditorProps) {
         img.src = URL.createObjectURL(file)
       })
       
+      console.log('Image dimensions:', dimensions)
+      
       // Create image reference
       const imageReference = {
         id: imageId,
@@ -43,8 +49,13 @@ export function NoteEditor({ noteId }: NoteEditorProps) {
         height: dimensions.height,
       }
       
+      console.log('Image reference:', imageReference)
+      console.log('About to save image to Supabase...')
+      
       // Save image to Supabase images table
       await supabaseDatabaseService.saveImage(noteId, imageReference, file)
+      
+      console.log('Image saved to Supabase successfully!')
       
       // Create image HTML with blob key reference
       const imageHtml = `<img src="/api/images/${blobKey}" alt="${file.name}" class="max-w-full h-auto rounded-lg" data-blob-key="${blobKey}" />`
@@ -53,8 +64,12 @@ export function NoteEditor({ noteId }: NoteEditorProps) {
       const newContent = note.content + imageHtml
       updateNote(noteId, { content: newContent })
       
+      console.log('Note content updated with image HTML')
+      
     } catch (error) {
-      console.error('Error uploading image:', error)
+      console.error('Error uploading image to Supabase:', error)
+      console.log('Falling back to base64 storage...')
+      
       // Fallback to base64 if Supabase upload fails
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -63,6 +78,7 @@ export function NoteEditor({ noteId }: NoteEditorProps) {
           const imageHtml = `<img src="${base64}" alt="${file.name}" class="max-w-full h-auto rounded-lg" />`
           const newContent = note.content + imageHtml
           updateNote(noteId, { content: newContent })
+          console.log('Image saved as base64 fallback')
         }
       }
       reader.readAsDataURL(file)
