@@ -3,7 +3,6 @@
 import { useDatabaseNoteStore } from "@/lib/store-database"
 import { TitleInput } from "./title-input"
 import { RichTextEditor } from "./rich-text-editor"
-import { EditorToolbar } from "./editor-toolbar"
 
 interface NoteEditorProps {
   noteId: string
@@ -31,7 +30,6 @@ export function NoteEditor({ noteId }: NoteEditorProps) {
 
   return (
     <div className="note-editor-container flex-1 flex flex-col h-full">
-      <EditorToolbar note={note} />
       <div className="note-editor-content flex-1 flex flex-col p-4">
         <TitleInput 
           title={note.title} 

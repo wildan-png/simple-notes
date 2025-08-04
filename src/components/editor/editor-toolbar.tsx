@@ -165,6 +165,7 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         onClick={handleImageUpload}
         title="Insert image"
       >
+        {/* eslint-disable-next-line jsx-a11y/alt-text */}
         <Image className="h-4 w-4" />
       </Button>
 
