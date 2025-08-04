@@ -14,7 +14,7 @@ export async function GET() {
     const supabase = createClient(supabaseUrl, supabaseKey);
     
     // Test basic connection
-    const { data: notes, error: notesError } = await supabase
+    const { data: _notes, error: notesError } = await supabase
       .from('notes')
       .select('count')
       .limit(1);
@@ -28,7 +28,7 @@ export async function GET() {
     }
     
     // Test images table
-    const { data: images, error: imagesError } = await supabase
+    const { data: _images, error: imagesError } = await supabase
       .from('images')
       .select('count')
       .limit(1);

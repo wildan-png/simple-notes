@@ -173,7 +173,7 @@ export function EditorToolbar({ editor, onImageUpload, isUploadingImage = false 
         {isUploadingImage ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
-          <Image className="h-4 w-4" />
+          <Image className="h-4 w-4" alt="Upload image" />
         )}
       </Button>
 

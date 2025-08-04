@@ -41,7 +41,7 @@ class SupabaseDatabaseService {
 
       // Get images for each note
       const notesWithImages = await Promise.all(
-        notes.map(async (note) => {
+        (notes || []).map(async (note: any) => {
           const { data: images } = await supabase
             .from('images')
             .select('id, blob_key, alt, width, height')
@@ -54,13 +54,13 @@ class SupabaseDatabaseService {
             createdAt: new Date(note.created_at as string),
             updatedAt: new Date(note.updated_at as string),
             isPinned: note.is_pinned as boolean,
-            images: images?.map(img => ({
+            images: (images || []).map((img: any) => ({
               id: img.id as string,
               blobKey: img.blob_key as string,
               alt: img.alt || '',
               width: img.width as number,
               height: img.height as number,
-            })) || [],
+            })),
           };
         })
       );
@@ -99,13 +99,13 @@ class SupabaseDatabaseService {
         createdAt: new Date(note.created_at as string),
         updatedAt: new Date(note.updated_at as string),
         isPinned: note.is_pinned as boolean,
-        images: images?.map(img => ({
+        images: (images || []).map((img: any) => ({
           id: img.id as string,
           blobKey: img.blob_key as string,
           alt: (img.alt as string) || '',
           width: img.width as number,
           height: img.height as number,
-        })) || [],
+        })),
       };
     } catch (error) {
       console.error('Error fetching note:', error);
@@ -172,7 +172,7 @@ class SupabaseDatabaseService {
 
       // Get images for each note
       const notesWithImages = await Promise.all(
-        notes.map(async (note) => {
+        (notes || []).map(async (note: any) => {
           const { data: images } = await supabase
             .from('images')
             .select('id, blob_key, alt, width, height')
@@ -185,13 +185,13 @@ class SupabaseDatabaseService {
             createdAt: new Date(note.created_at as string),
             updatedAt: new Date(note.updated_at as string),
             isPinned: note.is_pinned as boolean,
-            images: images?.map(img => ({
+            images: (images || []).map((img: any) => ({
               id: img.id as string,
               blobKey: img.blob_key as string,
               alt: (img.alt as string) || '',
               width: img.width as number,
               height: img.height as number,
-            })) || [],
+            })),
           };
         })
       );
