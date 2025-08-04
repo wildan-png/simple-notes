@@ -1,27 +1,36 @@
 import { createClient } from '@supabase/supabase-js';
 import { Note, ImageReference } from '@/types';
 
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// Singleton pattern to prevent multiple client initializations
+let supabase: ReturnType<typeof createClient> | null = null;
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables');
-}
+function getSupabaseClient() {
+  if (!supabase) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-const supabase = createClient(supabaseUrl, supabaseKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Missing Supabase environment variables');
+    }
+
+    supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    });
+
+    console.log('Supabase client initialized with URL:', supabaseUrl);
   }
-});
-
-console.log('Supabase client initialized with URL:', supabaseUrl);
+  
+  return supabase;
+}
 
 class SupabaseDatabaseService {
   // Note operations
   async getAllNotes(): Promise<Note[]> {
     try {
+      const supabase = getSupabaseClient();
       const { data: notes, error } = await supabase
         .from('notes')
         .select('*')
@@ -39,18 +48,18 @@ class SupabaseDatabaseService {
             .eq('note_id', note.id);
 
           return {
-            id: note.id,
-            title: note.title,
-            content: note.content,
-            createdAt: new Date(note.created_at),
-            updatedAt: new Date(note.updated_at),
-            isPinned: note.is_pinned,
+            id: note.id as string,
+            title: note.title as string,
+            content: note.content as string,
+            createdAt: new Date(note.created_at as string),
+            updatedAt: new Date(note.updated_at as string),
+            isPinned: note.is_pinned as boolean,
             images: images?.map(img => ({
-              id: img.id,
-              blobKey: img.blob_key,
+              id: img.id as string,
+              blobKey: img.blob_key as string,
               alt: img.alt || '',
-              width: img.width,
-              height: img.height,
+              width: img.width as number,
+              height: img.height as number,
             })) || [],
           };
         })
@@ -65,6 +74,7 @@ class SupabaseDatabaseService {
 
   async getNoteById(id: string): Promise<Note | null> {
     try {
+      const supabase = getSupabaseClient();
       const { data: note, error } = await supabase
         .from('notes')
         .select('*')
@@ -83,18 +93,18 @@ class SupabaseDatabaseService {
         .eq('note_id', id);
 
       return {
-        id: note.id,
-        title: note.title,
-        content: note.content,
-        createdAt: new Date(note.created_at),
-        updatedAt: new Date(note.updated_at),
-        isPinned: note.is_pinned,
+        id: note.id as string,
+        title: note.title as string,
+        content: note.content as string,
+        createdAt: new Date(note.created_at as string),
+        updatedAt: new Date(note.updated_at as string),
+        isPinned: note.is_pinned as boolean,
         images: images?.map(img => ({
-          id: img.id,
-          blobKey: img.blob_key,
-          alt: img.alt || '',
-          width: img.width,
-          height: img.height,
+          id: img.id as string,
+          blobKey: img.blob_key as string,
+          alt: (img.alt as string) || '',
+          width: img.width as number,
+          height: img.height as number,
         })) || [],
       };
     } catch (error) {
@@ -113,7 +123,8 @@ class SupabaseDatabaseService {
         throw new Error('Note title is required and cannot be empty');
       }
 
-      // Upsert note
+      // Upsert note (without handling images - they are saved separately)
+      const supabase = getSupabaseClient();
       const { error: noteError } = await supabase
         .from('notes')
         .upsert({
@@ -126,21 +137,6 @@ class SupabaseDatabaseService {
         });
 
       if (noteError) throw noteError;
-
-      // Delete existing images for this note
-      await supabase
-        .from('images')
-        .delete()
-        .eq('note_id', note.id);
-
-      // Insert new images (if any)
-      if (note.images && note.images.length > 0) {
-        for (const image of note.images) {
-          // Note: We don't have the actual blob data here, so we'll skip images for now
-          // In a real implementation, you'd need to handle blob storage separately
-          console.warn('Image saving not implemented yet:', image.id);
-        }
-      }
     } catch (error) {
       console.error('Error saving note:', error);
       throw error;
@@ -149,6 +145,7 @@ class SupabaseDatabaseService {
 
   async deleteNote(noteId: string): Promise<void> {
     try {
+      const supabase = getSupabaseClient();
       const { error } = await supabase
         .from('notes')
         .delete()
@@ -163,6 +160,7 @@ class SupabaseDatabaseService {
 
   async searchNotes(query: string): Promise<Note[]> {
     try {
+      const supabase = getSupabaseClient();
       const { data: notes, error } = await supabase
         .from('notes')
         .select('*')
@@ -181,18 +179,18 @@ class SupabaseDatabaseService {
             .eq('note_id', note.id);
 
           return {
-            id: note.id,
-            title: note.title,
-            content: note.content,
-            createdAt: new Date(note.created_at),
-            updatedAt: new Date(note.updated_at),
-            isPinned: note.is_pinned,
+            id: note.id as string,
+            title: note.title as string,
+            content: note.content as string,
+            createdAt: new Date(note.created_at as string),
+            updatedAt: new Date(note.updated_at as string),
+            isPinned: note.is_pinned as boolean,
             images: images?.map(img => ({
-              id: img.id,
-              blobKey: img.blob_key,
-              alt: img.alt || '',
-              width: img.width,
-              height: img.height,
+              id: img.id as string,
+              blobKey: img.blob_key as string,
+              alt: (img.alt as string) || '',
+              width: img.width as number,
+              height: img.height as number,
             })) || [],
           };
         })
@@ -241,6 +239,7 @@ class SupabaseDatabaseService {
         dataSize: insertData.data.length
       })
 
+      const supabase = getSupabaseClient();
       const { data, error } = await supabase
         .from('images')
         .insert(insertData)
@@ -267,6 +266,7 @@ class SupabaseDatabaseService {
 
   async getImage(blobKey: string): Promise<Blob | null> {
     try {
+      const supabase = getSupabaseClient();
       const { data, error } = await supabase
         .from('images')
         .select('data')
@@ -278,7 +278,26 @@ class SupabaseDatabaseService {
         throw error;
       }
 
-      return new Blob([data.data], { type: 'image/png' });
+      // Supabase returns bytea data as a hex-encoded string (e.g., \x7b2230223a312c2231...)
+      if (typeof data.data === 'string') {
+        try {
+          // Remove the \x prefix and convert hex string to Uint8Array
+          const hexString = data.data.replace(/\\x/g, '');
+          const bytes = new Uint8Array(hexString.length / 2);
+          for (let i = 0; i < hexString.length; i += 2) {
+            bytes[i / 2] = parseInt(hexString.substr(i, 2), 16);
+          }
+          return new Blob([bytes], { type: 'image/png' });
+        } catch (error) {
+          console.error('Error decoding hex string:', error);
+          return null;
+        }
+      } else if (data.data instanceof Uint8Array) {
+        return new Blob([data.data], { type: 'image/png' });
+      } else {
+        console.error('Unexpected data type:', typeof data.data);
+        return null;
+      }
     } catch (error) {
       console.error('Error fetching image:', error);
       throw error;
@@ -287,6 +306,7 @@ class SupabaseDatabaseService {
 
   async deleteImage(blobKey: string): Promise<void> {
     try {
+      const supabase = getSupabaseClient();
       const { error } = await supabase
         .from('images')
         .delete()
@@ -302,6 +322,7 @@ class SupabaseDatabaseService {
   // Utility methods
   async getStorageStats(): Promise<{ noteCount: number; imageCount: number; totalSize: number }> {
     try {
+      const supabase = getSupabaseClient();
       const { count: noteCount } = await supabase
         .from('notes')
         .select('*', { count: 'exact', head: true });
@@ -327,6 +348,7 @@ class SupabaseDatabaseService {
 
   async clearAllData(): Promise<void> {
     try {
+      const supabase = getSupabaseClient();
       // Delete all images first (due to foreign key constraint)
       await supabase.from('images').delete().neq('id', '');
       

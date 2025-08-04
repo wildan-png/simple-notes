@@ -181,15 +181,28 @@
 
   /* List Styles */
   .ProseMirror ul {
-    @apply list-disc list-inside space-y-1;
+    @apply list-disc space-y-1;
+    padding-left: 1.5rem;
   }
 
   .ProseMirror ol {
-    @apply list-decimal list-inside space-y-1;
+    @apply list-decimal space-y-1;
+    padding-left: 1.5rem;
   }
 
   .ProseMirror li {
     @apply mb-1;
+    display: list-item;
+  }
+
+  /* Ensure proper list item alignment */
+  .ProseMirror li > p {
+    display: inline;
+    margin: 0;
+  }
+
+  .ProseMirror li > p:first-child {
+    display: inline;
   }
 
   .ProseMirror p.is-editor-empty:first-child::before {
