@@ -27,7 +27,7 @@ export function StorageToggle({ onStorageChange, currentStorage }: StorageToggle
       const response = await fetch('/api/health');
       const data = await response.json();
       setHealthStatus(data.status === 'healthy' ? 'healthy' : 'unhealthy');
-    } catch (error) {
+    } catch {
       setHealthStatus('unhealthy');
     }
   };

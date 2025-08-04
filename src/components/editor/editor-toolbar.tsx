@@ -9,10 +9,9 @@ import { Editor } from "@tiptap/react"
 interface EditorToolbarProps {
   editor?: Editor
   onImageUpload?: (file: File) => void
-  onImageRemove?: (imageId: string) => void
 }
 
-export function EditorToolbar({ editor, onImageUpload, onImageRemove }: EditorToolbarProps) {
+export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement | null>(null)
 
   // Check for selected image on every render

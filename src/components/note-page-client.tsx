@@ -9,10 +9,10 @@ import { useRouter } from "next/navigation"
 import { useNoteStore } from "@/lib/store"
 
 interface NotePageClientProps {
-  noteId: string
+  noteId?: string
 }
 
-export function NotePageClient({ noteId }: NotePageClientProps) {
+export function NotePageClient({ }: NotePageClientProps) {
   const router = useRouter()
   const { selectedNoteId } = useNoteStore()
 

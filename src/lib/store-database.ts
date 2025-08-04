@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Note, NoteStore } from '@/types';
 import { apiService } from './api';
-import { searchNotes, sortNotes, generateId } from './utils';
+import { searchNotes, sortNotes } from './utils';
 
 // Database-backed note store
 export const useDatabaseNoteStore = create<NoteStore & {

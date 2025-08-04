@@ -6,7 +6,7 @@ import StarterKit from "@tiptap/starter-kit"
 import Underline from "@tiptap/extension-underline"
 import TextAlign from "@tiptap/extension-text-align"
 import Image from "@tiptap/extension-image"
-import { useDatabaseNoteStore } from "@/lib/store-database"
+
 import { EditorToolbar } from "./editor-toolbar"
 
 interface RichTextEditorProps {
@@ -15,8 +15,6 @@ interface RichTextEditorProps {
 }
 
 export function RichTextEditor({ content, onContentChange }: RichTextEditorProps) {
-  const { updateNote, notes } = useDatabaseNoteStore()
-  const [isUpdating, setIsUpdating] = useState(false)
   const [isClient, setIsClient] = useState(false)
 
   // Ensure we're on the client side before rendering the editor
@@ -34,6 +32,7 @@ export function RichTextEditor({ content, onContentChange }: RichTextEditorProps
       Image.configure({
         HTMLAttributes: {
           class: 'max-w-full h-auto rounded-lg',
+          alt: '',
         },
       }),
     ],
@@ -47,10 +46,7 @@ export function RichTextEditor({ content, onContentChange }: RichTextEditorProps
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
       if (html !== content) {
-        setIsUpdating(true)
         onContentChange(html)
-        // Reset the updating flag after a short delay
-        setTimeout(() => setIsUpdating(false), 100)
       }
     },
   })

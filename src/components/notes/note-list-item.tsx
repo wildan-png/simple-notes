@@ -3,7 +3,7 @@
 import { formatDistanceToNow } from "date-fns"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Pin, Trash2, MoreVertical } from "lucide-react"
+import { Pin, MoreVertical } from "lucide-react"
 import { useDatabaseNoteStore } from "@/lib/store-database"
 import { Note } from "@/types"
 import {

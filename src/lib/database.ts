@@ -87,7 +87,14 @@ class DatabaseService {
       WHERE note_id = ?
     `);
 
-    const notes = notesStmt.all() as any[];
+    const notes = notesStmt.all() as Array<{
+      id: string;
+      title: string;
+      content: string;
+      created_at: string;
+      updated_at: string;
+      is_pinned: number;
+    }>;
     
     return notes.map(note => {
       const images = imagesStmt.all(note.id) as ImageReference[];
@@ -124,7 +131,14 @@ class DatabaseService {
       WHERE note_id = ?
     `);
 
-    const note = noteStmt.get(id) as any;
+    const note = noteStmt.get(id) as {
+      id: string;
+      title: string;
+      content: string;
+      created_at: string;
+      updated_at: string;
+      is_pinned: number;
+    } | undefined;
     if (!note) return null;
 
     const images = imagesStmt.all(id) as ImageReference[];
@@ -186,11 +200,6 @@ class DatabaseService {
 
       // Insert new images
       if (note.images && note.images.length > 0) {
-        const insertImageStmt = this.db!.prepare(`
-          INSERT INTO images (id, note_id, blob_key, alt, width, height, data)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-        `);
-
         for (const image of note.images) {
           // Note: We don't have the actual blob data here, so we'll skip images for now
           // In a real implementation, you'd need to handle blob storage separately
@@ -226,7 +235,14 @@ class DatabaseService {
     `);
 
     const searchPattern = `%${query}%`;
-    const notes = searchStmt.all(searchPattern, searchPattern) as any[];
+    const notes = searchStmt.all(searchPattern, searchPattern) as Array<{
+      id: string;
+      title: string;
+      content: string;
+      created_at: string;
+      updated_at: string;
+      is_pinned: number;
+    }>;
 
     const imagesStmt = this.db.prepare(`
       SELECT id, blob_key, alt, width, height
@@ -285,7 +301,7 @@ class DatabaseService {
       SELECT data FROM images WHERE blob_key = ?
     `);
 
-    const result = stmt.get(blobKey) as any;
+    const result = stmt.get(blobKey) as { data: Buffer } | undefined;
     if (!result) return null;
 
     return new Blob([result.data], { type: 'image/png' });
@@ -309,9 +325,9 @@ class DatabaseService {
     const imageCountStmt = this.db.prepare('SELECT COUNT(*) as count FROM images');
     const sizeStmt = this.db.prepare('SELECT SUM(LENGTH(data)) as total_size FROM images');
 
-    const noteCount = (noteCountStmt.get() as any).count;
-    const imageCount = (imageCountStmt.get() as any).count;
-    const totalSize = (sizeStmt.get() as any).total_size || 0;
+    const noteCount = (noteCountStmt.get() as { count: number }).count;
+    const imageCount = (imageCountStmt.get() as { count: number }).count;
+    const totalSize = (sizeStmt.get() as { total_size: number | null }).total_size || 0;
 
     return { noteCount, imageCount, totalSize };
   }
