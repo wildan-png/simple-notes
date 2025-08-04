@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Bold, Italic, Underline, List, ListOrdered, Image, Trash2, AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react"
+import { Bold, Italic, Underline, List, ListOrdered, Image, Trash2, AlignLeft, AlignCenter, AlignRight, AlignJustify, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Editor } from "@tiptap/react"
@@ -9,9 +9,10 @@ import { Editor } from "@tiptap/react"
 interface EditorToolbarProps {
   editor?: Editor
   onImageUpload?: (file: File) => void
+  isUploadingImage?: boolean
 }
 
-export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
+export function EditorToolbar({ editor, onImageUpload, isUploadingImage = false }: EditorToolbarProps) {
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement | null>(null)
 
   // Check for selected image on every render
@@ -37,6 +38,8 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
   }, [])
 
   const handleImageUpload = () => {
+    if (isUploadingImage) return // Prevent multiple uploads
+    
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = 'image/*'
@@ -164,9 +167,14 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         size="sm"
         onClick={handleImageUpload}
         title="Insert image"
+        disabled={isUploadingImage}
+        className={isUploadingImage ? "opacity-50 cursor-not-allowed" : ""}
       >
-        {/* eslint-disable-next-line jsx-a11y/alt-text */}
-        <Image className="h-4 w-4" />
+        {isUploadingImage ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Image className="h-4 w-4" />
+        )}
       </Button>
 
       {/* Image Remove */}

@@ -12,9 +12,10 @@ interface RichTextEditorProps {
   content: string
   onContentChange: (content: string) => void
   onImageUpload?: (file: File) => void
+  isUploadingImage?: boolean
 }
 
-export function RichTextEditor({ content, onContentChange, onImageUpload }: RichTextEditorProps) {
+export function RichTextEditor({ content, onContentChange, onImageUpload, isUploadingImage = false }: RichTextEditorProps) {
   const [isClient, setIsClient] = useState(false)
 
   // Ensure we're on the client side before rendering the editor
@@ -75,7 +76,11 @@ export function RichTextEditor({ content, onContentChange, onImageUpload }: Rich
 
   return (
     <div className="rich-text-editor-container flex-1 flex flex-col min-h-0">
-      <EditorToolbar editor={editor} onImageUpload={onImageUpload} />
+      <EditorToolbar 
+        editor={editor} 
+        onImageUpload={onImageUpload} 
+        isUploadingImage={isUploadingImage}
+      />
       <div className="rich-text-editor-content flex-1 overflow-y-auto p-4">
         <EditorContent 
           editor={editor} 
