@@ -1,6 +1,24 @@
 import { createClient } from '@supabase/supabase-js';
 import { Note, ImageReference } from '@/types';
 
+// Type definitions for Supabase data
+interface SupabaseNote {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+  is_pinned: boolean;
+}
+
+interface SupabaseImage {
+  id: string;
+  blob_key: string;
+  alt: string | null;
+  width: number;
+  height: number;
+}
+
 // Singleton pattern to prevent multiple client initializations
 let supabase: ReturnType<typeof createClient> | null = null;
 
@@ -41,25 +59,25 @@ class SupabaseDatabaseService {
 
       // Get images for each note
       const notesWithImages = await Promise.all(
-        (notes || []).map(async (note: any) => {
+        (notes || []).map(async (note) => {
           const { data: images } = await supabase
             .from('images')
             .select('id, blob_key, alt, width, height')
-            .eq('note_id', note.id);
+            .eq('note_id', (note as unknown as SupabaseNote).id);
 
           return {
-            id: note.id as string,
-            title: note.title as string,
-            content: note.content as string,
-            createdAt: new Date(note.created_at as string),
-            updatedAt: new Date(note.updated_at as string),
-            isPinned: note.is_pinned as boolean,
-            images: (images || []).map((img: any) => ({
-              id: img.id as string,
-              blobKey: img.blob_key as string,
-              alt: img.alt || '',
-              width: img.width as number,
-              height: img.height as number,
+            id: (note as unknown as SupabaseNote).id,
+            title: (note as unknown as SupabaseNote).title,
+            content: (note as unknown as SupabaseNote).content,
+            createdAt: new Date((note as unknown as SupabaseNote).created_at),
+            updatedAt: new Date((note as unknown as SupabaseNote).updated_at),
+            isPinned: (note as unknown as SupabaseNote).is_pinned,
+            images: (images || []).map((img) => ({
+              id: (img as unknown as SupabaseImage).id,
+              blobKey: (img as unknown as SupabaseImage).blob_key,
+              alt: (img as unknown as SupabaseImage).alt || '',
+              width: (img as unknown as SupabaseImage).width,
+              height: (img as unknown as SupabaseImage).height,
             })),
           };
         })
@@ -93,18 +111,18 @@ class SupabaseDatabaseService {
         .eq('note_id', id);
 
       return {
-        id: note.id as string,
-        title: note.title as string,
-        content: note.content as string,
-        createdAt: new Date(note.created_at as string),
-        updatedAt: new Date(note.updated_at as string),
-        isPinned: note.is_pinned as boolean,
-        images: (images || []).map((img: any) => ({
-          id: img.id as string,
-          blobKey: img.blob_key as string,
-          alt: (img.alt as string) || '',
-          width: img.width as number,
-          height: img.height as number,
+        id: (note as unknown as SupabaseNote).id,
+        title: (note as unknown as SupabaseNote).title,
+        content: (note as unknown as SupabaseNote).content,
+        createdAt: new Date((note as unknown as SupabaseNote).created_at),
+        updatedAt: new Date((note as unknown as SupabaseNote).updated_at),
+        isPinned: (note as unknown as SupabaseNote).is_pinned,
+        images: (images || []).map((img) => ({
+          id: (img as unknown as SupabaseImage).id,
+          blobKey: (img as unknown as SupabaseImage).blob_key,
+          alt: (img as unknown as SupabaseImage).alt || '',
+          width: (img as unknown as SupabaseImage).width,
+          height: (img as unknown as SupabaseImage).height,
         })),
       };
     } catch (error) {
@@ -172,25 +190,25 @@ class SupabaseDatabaseService {
 
       // Get images for each note
       const notesWithImages = await Promise.all(
-        (notes || []).map(async (note: any) => {
+        (notes || []).map(async (note) => {
           const { data: images } = await supabase
             .from('images')
             .select('id, blob_key, alt, width, height')
-            .eq('note_id', note.id);
+            .eq('note_id', (note as unknown as SupabaseNote).id);
 
           return {
-            id: note.id as string,
-            title: note.title as string,
-            content: note.content as string,
-            createdAt: new Date(note.created_at as string),
-            updatedAt: new Date(note.updated_at as string),
-            isPinned: note.is_pinned as boolean,
-            images: (images || []).map((img: any) => ({
-              id: img.id as string,
-              blobKey: img.blob_key as string,
-              alt: (img.alt as string) || '',
-              width: img.width as number,
-              height: img.height as number,
+            id: (note as unknown as SupabaseNote).id,
+            title: (note as unknown as SupabaseNote).title,
+            content: (note as unknown as SupabaseNote).content,
+            createdAt: new Date((note as unknown as SupabaseNote).created_at),
+            updatedAt: new Date((note as unknown as SupabaseNote).updated_at),
+            isPinned: (note as unknown as SupabaseNote).is_pinned,
+            images: (images || []).map((img) => ({
+              id: (img as unknown as SupabaseImage).id,
+              blobKey: (img as unknown as SupabaseImage).blob_key,
+              alt: (img as unknown as SupabaseImage).alt || '',
+              width: (img as unknown as SupabaseImage).width,
+              height: (img as unknown as SupabaseImage).height,
             })),
           };
         })
